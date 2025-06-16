@@ -17,6 +17,7 @@ export function getConfig(): Config {
   const openaiApiKey = Deno.env.get("OPENAI_API_KEY");
   const claudeApiKey = Deno.env.get("CLAUDE_API_KEY");
   const deepseekApiKey = Deno.env.get("DEEPSEEK_API_KEY");
+  // Port is only used for local development, Deno Deploy handles this automatically
   const port = parseInt(Deno.env.get("PORT") || "8000");
 
   if (!slackBotToken) {

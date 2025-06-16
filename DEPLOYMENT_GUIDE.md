@@ -70,6 +70,8 @@ SLACK_BOT_TOKEN=xoxb-your-actual-bot-token
 SLACK_SIGNING_SECRET=your-actual-signing-secret
 ```
 
+**注意**: Deno Deploy では `PORT` 環境変数は不要です。Deno Deploy が自動的にHTTPS (443ポート) でリクエストを処理します。
+
 #### LLMプロバイダー設定（いずれか1つ）
 
 **OpenAI を使用する場合:**

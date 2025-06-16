@@ -19,5 +19,14 @@ async function handler(request: Request): Promise<Response> {
   return new Response("Not Found", { status: 404 });
 }
 
-console.log(`🤖 Slack bot starting on port ${config.port}`);
-Deno.serve({ port: config.port }, handler);
+// For Deno Deploy, port is automatically handled
+// For local development, use config.port
+if (Deno.env.get("DENO_DEPLOYMENT_ID")) {
+  // Running on Deno Deploy - no port configuration needed
+  console.log("🤖 Slack bot starting on Deno Deploy");
+  Deno.serve(handler);
+} else {
+  // Running locally - use configured port
+  console.log(`🤖 Slack bot starting locally on port ${config.port}`);
+  Deno.serve({ port: config.port }, handler);
+}
