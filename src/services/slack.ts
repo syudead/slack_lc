@@ -1,6 +1,13 @@
 import { SlackMessage } from "../types/slack.ts";
 import { Config } from "../utils/config.ts";
 
+export interface SlackHistoryMessage {
+  text: string;
+  user: string;
+  ts: string;
+  bot_id?: string;
+}
+
 export class SlackClient {
   private token: string;
 
@@ -31,6 +38,38 @@ export class SlackClient {
     } catch (error) {
       console.error("Error sending message to Slack:", error);
       throw error;
+    }
+  }
+
+  async getConversationHistory(channel: string, threadTs?: string, limit: number = 10): Promise<SlackHistoryMessage[]> {
+    try {
+      const url = threadTs 
+        ? "https://slack.com/api/conversations.replies"
+        : "https://slack.com/api/conversations.history";
+      
+      const params = new URLSearchParams({
+        channel,
+        limit: limit.toString(),
+        ...(threadTs && { ts: threadTs })
+      });
+
+      const response = await fetch(`${url}?${params}`, {
+        headers: {
+          "Authorization": `Bearer ${this.token}`,
+        },
+      });
+
+      const result = await response.json();
+      
+      if (!result.ok) {
+        console.warn(`Slack API warning: ${result.error}`);
+        return [];
+      }
+
+      return result.messages || [];
+    } catch (error) {
+      console.error("Error fetching conversation history:", error);
+      return [];
     }
   }
 }

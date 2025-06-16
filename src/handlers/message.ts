@@ -1,9 +1,7 @@
 import { SlackEvent } from "../types/slack.ts";
 import { Config } from "../utils/config.ts";
 import { LangChainAgent } from "../services/langchain.ts";
-import { SlackClient } from "../services/slack.ts";
-
-const conversationMemory = new Map<string, string[]>();
+import { SlackClient, SlackHistoryMessage } from "../services/slack.ts";
 
 export async function processMessage(
   event: SlackEvent,
@@ -20,9 +18,8 @@ export async function processMessage(
     const langchainAgent = new LangChainAgent(config);
     const slackClient = new SlackClient(config);
 
-    // Get conversation context from memory
-    const conversationKey = thread_ts || channel;
-    const context = getConversationContext(conversationKey);
+    // Get conversation context from Slack history
+    const context = await buildConversationContext(slackClient, channel, thread_ts);
 
     // Generate response using LangChain
     const response = await langchainAgent.generateResponse(text, context);
@@ -33,9 +30,6 @@ export async function processMessage(
       text: response,
       thread_ts,
     });
-
-    // Update conversation memory
-    updateConversationMemory(conversationKey, user, text, response);
 
   } catch (error) {
     console.error("Error processing message:", error);
@@ -54,26 +48,27 @@ export async function processMessage(
   }
 }
 
-function getConversationContext(conversationKey: string): string {
-  const messages = conversationMemory.get(conversationKey) || [];
-  return messages.slice(-5).join("\n"); // Keep last 5 messages for context
-}
+async function buildConversationContext(
+  slackClient: SlackClient, 
+  channel: string, 
+  threadTs?: string
+): Promise<string> {
+  try {
+    const messages = await slackClient.getConversationHistory(channel, threadTs, 5);
+    
+    // Filter out the current message and format for context
+    const contextMessages = messages
+      .filter(msg => msg.text && msg.text.trim())
+      .slice(0, -1) // Remove the current message
+      .slice(-4) // Keep last 4 messages for context
+      .map(msg => {
+        const sender = msg.bot_id ? "Bot" : `User`;
+        return `${sender}: ${msg.text}`;
+      });
 
-function updateConversationMemory(
-  conversationKey: string,
-  user: string,
-  userMessage: string,
-  botResponse: string
-): void {
-  const messages = conversationMemory.get(conversationKey) || [];
-  
-  messages.push(`User (${user}): ${userMessage}`);
-  messages.push(`Bot: ${botResponse}`);
-  
-  // Keep only last 10 messages to manage memory
-  if (messages.length > 10) {
-    messages.splice(0, messages.length - 10);
+    return contextMessages.join("\n");
+  } catch (error) {
+    console.warn("Failed to build context from Slack history:", error);
+    return "";
   }
-  
-  conversationMemory.set(conversationKey, messages);
 }
