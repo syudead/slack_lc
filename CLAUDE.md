@@ -87,6 +87,13 @@ export DEEPSEEK_API_KEY=sk-your-deepseek-key
 
 ## Development Workflow
 
+### Code Modification Policy
+- **Propose before implementing**: Before making any code changes, explain the proposed approach and get user approval
+- **Break down complex changes**: For multi-step modifications, present a clear plan with numbered steps
+- **Explain rationale**: Always explain why the proposed changes are necessary and how they solve the problem
+- **Wait for confirmation**: Do not proceed with code modifications until the user explicitly approves the approach
+- **Offer alternatives**: When possible, present multiple solution options for the user to choose from
+
 ### Git Commit Policy
 - **Commit after every code change**: Create a git commit after each logical code modification
 - **Descriptive commit messages**: Use clear, concise messages that explain the "why" behind changes
