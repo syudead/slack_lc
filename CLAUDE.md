@@ -36,7 +36,42 @@ The application follows an event-driven architecture with three main components:
 - **Deno Runtime**: All code must be compatible with Deno (no Node.js APIs)
 - **ES Modules Only**: Use ES module imports/exports exclusively
 - **LangChain Slack Toolkit**: Must use `@langchain/slack` for Slack API interactions
-- **Environment Variables**: Required: `SLACK_BOT_TOKEN`, `SLACK_SIGNING_SECRET`, `OPENAI_API_KEY`, `PORT`
+- **Environment Variables**: Required: `SLACK_BOT_TOKEN`, `SLACK_SIGNING_SECRET`, `LLM_PROVIDER`, and corresponding API key, `PORT`
+
+## LLM Provider Configuration
+
+The application supports multiple LLM providers. Configure using environment variables:
+
+### Required Environment Variables
+- `SLACK_BOT_TOKEN` - Slack bot token
+- `SLACK_SIGNING_SECRET` - Slack signing secret
+- `LLM_PROVIDER` - LLM provider to use (`openai`, `claude`, or `deepseek`)
+- `PORT` - Server port (optional, defaults to 8000)
+
+### LLM Provider API Keys (one required based on LLM_PROVIDER)
+- `OPENAI_API_KEY` - Required when `LLM_PROVIDER=openai`
+- `CLAUDE_API_KEY` - Required when `LLM_PROVIDER=claude`
+- `DEEPSEEK_API_KEY` - Required when `LLM_PROVIDER=deepseek`
+
+### Example Configuration
+
+#### OpenAI (default)
+```bash
+export LLM_PROVIDER=openai
+export OPENAI_API_KEY=sk-your-openai-key
+```
+
+#### Claude
+```bash
+export LLM_PROVIDER=claude
+export CLAUDE_API_KEY=sk-ant-your-claude-key
+```
+
+#### DeepSeek
+```bash
+export LLM_PROVIDER=deepseek
+export DEEPSEEK_API_KEY=sk-your-deepseek-key
+```
 
 ## File Structure
 

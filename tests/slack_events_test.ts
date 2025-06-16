@@ -5,6 +5,7 @@ import { Config } from "../src/utils/config.ts";
 const mockConfig: Config = {
   slackBotToken: "xoxb-test-token",
   slackSigningSecret: "test-signing-secret",
+  llmProvider: "openai",
   openaiApiKey: "test-openai-key",
   port: 8000,
 };
