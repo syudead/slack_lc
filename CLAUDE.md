@@ -20,7 +20,11 @@ deno test --allow-net --allow-env
 
 ### Deployment
 ```bash
+# Deploy to Deno Deploy
 deployctl deploy --project=slack-langchain-bot main.ts
+
+# Or use the configured task
+deno task deploy
 ```
 
 ## Architecture
