@@ -164,6 +164,8 @@
     "https://esm.sh/@langchain/core@0.2.36/utils/chunk_array?target=denonext": "77ce884881ed222a998b7c6d0cc6040863110c989086b451e6001419c0941c32",
     "https://esm.sh/@langchain/core@0.2.36/utils/env?target=denonext": "25ad7e483212a7302435997a85a465adacae50eb53bfb8912935c4b41bbecd4f",
     "https://esm.sh/@langchain/core@0.2.36/utils/function_calling?target=denonext": "3e111a198979ddea26705ebfba1409936b7264f16abef88fdc2d878d8b01f49c",
+    "https://esm.sh/@langchain/openai@0.0.28/denonext/openai.bundle.mjs": "f4cc3ae32d166a1138d4c4c6bbba55bab7560de7a378269e5ee243d453e97a44",
+    "https://esm.sh/@langchain/openai@0.0.28?bundle-deps": "9e821b8bb2cb94f74c92d5118fd6d7a8058a11c7158100a21ab7b677dd2c61d6",
     "https://esm.sh/@langchain/openai@0.2.8": "9a8765c540cceb71dd110fa32bf0661e8b7659cf8ceeef9087e30de79f133aad",
     "https://esm.sh/@langchain/openai@0.2.8/denonext/dist/index.mjs": "a5aebb26633321206f9e8ce71433e6dec2500dc6e17e498cf539087ad5f3f8aa",
     "https://esm.sh/@langchain/openai@0.2.8/denonext/openai.mjs": "86d5b1b3717784b6085e789f8262c827513e47e6b24cf0c3a595b9bec657e4e8",

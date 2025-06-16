@@ -5,9 +5,6 @@
     "deploy": "deployctl deploy --project=slack-langchain-bot main.ts"
   },
   "imports": {
-    "@langchain/core": "https://esm.sh/@langchain/core@0.1.60?bundle-deps",
-    "@langchain/community": "https://esm.sh/@langchain/community@0.0.51?bundle-deps",
-    "@langchain/slack": "https://esm.sh/@langchain/slack@0.0.4?bundle-deps",
     "@langchain/openai": "https://esm.sh/@langchain/openai@0.0.28?bundle-deps",
     "@langchain/anthropic": "https://esm.sh/@langchain/anthropic@0.1.19?bundle-deps"
   },

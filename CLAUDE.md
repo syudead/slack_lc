@@ -23,6 +23,7 @@ deno task deploy
 ## Technical Constraints
 - **Deno Runtime**: All code must be compatible with Deno (no Node.js APIs)
 - **ES Modules Only**: Use ES module imports/exports exclusively
+- **LangChain**: Use LangChain for LLM interactions (OpenAI, Anthropic)
 - **Environment Variables**: See `.env.example` for required configuration
 
 ## Git Commit Policy
