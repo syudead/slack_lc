@@ -1,118 +1,47 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code when working with this repository.
 
-## Project Overview
-
-This is a Slack bot powered by LangChain that runs on Deno and deploys to Deno Deploy. The bot uses the LangChain Slack toolkit to handle Slack events and provide intelligent responses.
+## Code Modification Policy
+- **Propose before implementing**: Explain approach and get user approval before making code changes
+- **Wait for confirmation**: Do not proceed with modifications until user explicitly approves
+- **Break down complex changes**: Present clear step-by-step plans for multi-step modifications
+- **Explain rationale**: Always explain why changes are necessary and how they solve the problem
 
 ## Development Commands
-
-### Local Development
 ```bash
+# Local development
 deno run --allow-net --allow-env main.ts
-```
 
-### Testing
-```bash
+# Testing
 deno test --allow-net --allow-env
-```
 
-### Deployment
-```bash
-# Deploy to Deno Deploy
-deployctl deploy --project=slack-langchain-bot main.ts
-
-# Or use the configured task
+# Deploy
 deno task deploy
 ```
 
-## Architecture
-
-The application follows an event-driven architecture with three main components:
-
-1. **Slack Event Handler** (`src/handlers/slack-events.ts`) - Receives and validates Slack webhook events
-2. **LangChain Agent** (`src/services/langchain.ts`) - Handles LLM interactions using LangChain Slack toolkit
-3. **Message Processor** (`src/handlers/message.ts`) - Processes messages and manages conversation context
-
-## Key Technical Constraints
-
+## Technical Constraints
 - **Deno Runtime**: All code must be compatible with Deno (no Node.js APIs)
 - **ES Modules Only**: Use ES module imports/exports exclusively
-- **LangChain Slack Toolkit**: Must use `@langchain/slack` for Slack API interactions
-- **Environment Variables**: Required: `SLACK_BOT_TOKEN`, `SLACK_SIGNING_SECRET`, `LLM_PROVIDER`, and corresponding API key, `PORT`
+- **Environment Variables**: See `.env.example` for required configuration
 
-## LLM Provider Configuration
-
-The application supports multiple LLM providers. Configure using environment variables:
-
-### Required Environment Variables
-- `SLACK_BOT_TOKEN` - Slack bot token
-- `SLACK_SIGNING_SECRET` - Slack signing secret
-- `LLM_PROVIDER` - LLM provider to use (`openai`, `claude`, or `deepseek`)
-- `PORT` - Server port (optional, defaults to 8000)
-
-### LLM Provider API Keys (one required based on LLM_PROVIDER)
-- `OPENAI_API_KEY` - Required when `LLM_PROVIDER=openai`
-- `CLAUDE_API_KEY` - Required when `LLM_PROVIDER=claude`
-- `DEEPSEEK_API_KEY` - Required when `LLM_PROVIDER=deepseek`
-
-### Example Configuration
-
-#### OpenAI (default)
-```bash
-export LLM_PROVIDER=openai
-export OPENAI_API_KEY=sk-your-openai-key
-```
-
-#### Claude
-```bash
-export LLM_PROVIDER=claude
-export CLAUDE_API_KEY=sk-ant-your-claude-key
-```
-
-#### DeepSeek
-```bash
-export LLM_PROVIDER=deepseek
-export DEEPSEEK_API_KEY=sk-your-deepseek-key
-```
-
-## File Structure
-
-- `main.ts` - Entry point with HTTP server
-- `src/handlers/` - Event and message handling
-- `src/services/` - LangChain and Slack API services
-- `src/utils/` - Authentication and configuration utilities
-- `src/types/` - TypeScript type definitions
-
-## Development Workflow
-
-### Code Modification Policy
-- **Propose before implementing**: Before making any code changes, explain the proposed approach and get user approval
-- **Break down complex changes**: For multi-step modifications, present a clear plan with numbered steps
-- **Explain rationale**: Always explain why the proposed changes are necessary and how they solve the problem
-- **Wait for confirmation**: Do not proceed with code modifications until the user explicitly approves the approach
-- **Offer alternatives**: When possible, present multiple solution options for the user to choose from
-
-### Git Commit Policy
-- **Commit after every code change**: Create a git commit after each logical code modification
-- **Descriptive commit messages**: Use clear, concise messages that explain the "why" behind changes
+## Git Commit Policy
+- **Commit after every code change**: Create a git commit after each logical modification
+- **Descriptive commit messages**: Use clear messages that explain the "why" behind changes
 - **Atomic commits**: Each commit should represent a single, complete change
-- **Commit before testing**: Always commit working code before running tests or making further changes
 
 ### Commit Message Format
 ```
 <type>: <description>
-
-<optional body explaining the change>
 
 🤖 Generated with [Claude Code](https://claude.ai/code)
 
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```
 
-## Slack Configuration
-
-The bot requires specific Slack app permissions:
-- Bot Token Scopes: `chat:write`, `channels:read`, `groups:read`, `im:read`, `mpim:read`
-- Event Subscriptions: `message.channels`, `message.groups`, `message.im`, `message.mpim`, `app_mention`
+## Project Information
+For detailed project information, configuration, and setup instructions, see:
+- **Project Overview**: `README.md`
+- **Setup Guide**: `docs/SLACK_SETUP.md`
+- **Deployment**: `docs/DEPLOYMENT_GUIDE.md`
+- **Architecture**: `docs/PROJECT_SPEC.md`
