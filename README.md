@@ -19,7 +19,7 @@ cd slack-langchain-bot
 ```
 
 ### 2. Slack App の作成
-詳細な手順は [`SLACK_SETUP.md`](./SLACK_SETUP.md) を参照してください。
+詳細な手順は [`docs/SLACK_SETUP.md`](./docs/SLACK_SETUP.md) を参照してください。
 
 ### 3. 環境変数の設定
 `.env.example` を参考に環境変数を設定:
@@ -44,7 +44,7 @@ deno task dev
 ```
 
 ### 5. Deno Deploy にデプロイ
-詳細な手順は [`DEPLOYMENT_GUIDE.md`](./DEPLOYMENT_GUIDE.md) を参照してください。
+詳細な手順は [`docs/DEPLOYMENT_GUIDE.md`](./docs/DEPLOYMENT_GUIDE.md) を参照してください。
 
 ## 📁 プロジェクト構成
 
@@ -64,10 +64,13 @@ deno task dev
 │       ├── slack.ts
 │       └── llm.ts
 ├── tests/                  # テストファイル
+├── docs/                   # ドキュメント
+│   ├── SLACK_SETUP.md     # Slack App セットアップガイド
+│   ├── DEPLOYMENT_GUIDE.md # デプロイメントガイド
+│   └── slack-app-manifest.json # Slack App Manifest
 ├── deno.json              # Deno設定・依存関係
 ├── CLAUDE.md              # Claude Code 向け指示
-├── SLACK_SETUP.md         # Slack App セットアップガイド
-├── DEPLOYMENT_GUIDE.md    # デプロイメントガイド
+├── .env.example           # 環境変数テンプレート
 └── README.md              # このファイル
 ```
 
@@ -158,7 +161,7 @@ Bot に必要な Slack 権限:
 2. 環境変数がDeno Deploy で設定されているか確認
 3. Slack Request URL が正しく設定されているか確認
 
-詳細は [`DEPLOYMENT_GUIDE.md`](./DEPLOYMENT_GUIDE.md) を参照してください。
+詳細は [`docs/DEPLOYMENT_GUIDE.md`](./docs/DEPLOYMENT_GUIDE.md) を参照してください。
 
 ## 🤝 コントリビューション
 
