@@ -21,8 +21,11 @@ export async function processMessage(
     // Get conversation context from Slack history
     const context = await buildConversationContext(slackClient, channel, thread_ts, user);
 
+    // Clean mention from message text for better processing
+    const cleanedText = await cleanMentionsFromText(slackClient, text);
+    
     // Generate response using LangChain
-    const response = await langchainAgent.generateResponse(text, context);
+    const response = await langchainAgent.generateResponse(cleanedText, context);
 
     // Send response to Slack
     await slackClient.sendMessage({
@@ -96,7 +99,9 @@ async function buildConversationContext(
         }
       }
       
-      contextMessages.push(`${senderName}: ${msg.text}`);
+      // Clean mentions from context messages to avoid confusion
+      const cleanedMsg = await cleanMentionsFromText(slackClient, msg.text);
+      contextMessages.push(`${senderName}: ${cleanedMsg}`);
     }
 
     // Add current user info to context if available
@@ -114,5 +119,40 @@ async function buildConversationContext(
   } catch (error) {
     console.warn("Failed to build context from Slack history:", error);
     return "";
+  }
+}
+
+async function cleanMentionsFromText(
+  slackClient: SlackClient, 
+  text: string
+): Promise<string> {
+  try {
+    // Get bot user ID to specifically remove bot mentions
+    const botUserId = await slackClient.getBotUserId();
+    
+    // Remove bot mention from text
+    let cleanedText = text.replace(new RegExp(`<@${botUserId}>`, 'g'), '').trim();
+    
+    // Also remove other user mentions and replace with readable names
+    const mentionPattern = /<@([UW][A-Z0-9]+)>/g;
+    const matches = Array.from(cleanedText.matchAll(mentionPattern));
+    
+    for (const match of matches) {
+      const userId = match[1];
+      const userInfo = await slackClient.getUserInfo(userId);
+      const userName = userInfo?.profile?.display_name || 
+                      userInfo?.profile?.real_name || 
+                      userInfo?.real_name || 
+                      userInfo?.name || 
+                      'someone';
+      
+      cleanedText = cleanedText.replace(match[0], `@${userName}`);
+    }
+    
+    return cleanedText.trim();
+  } catch (error) {
+    console.warn("Error cleaning mentions from text:", error);
+    // Fallback: simple regex to remove mentions
+    return text.replace(/<@[UW][A-Z0-9]+>/g, '').trim();
   }
 }
