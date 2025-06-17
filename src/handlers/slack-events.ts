@@ -42,8 +42,17 @@ export async function handleSlackEvent(
     if (data.type === "event_callback") {
       const event = data as SlackEvent;
       
+      // Handle app mentions (most reliable way to detect bot mentions)
+      if (event.event?.type === "app_mention" && !event.event.bot_id) {
+        // Process the mention in the background
+        processMessage(event, config).catch((error) => {
+          console.error("Error processing app mention:", error);
+        });
+      }
+      
+      // Handle direct messages
       if (event.event?.type === "message" && !event.event.bot_id) {
-        // Process the message in the background
+        // Check if it's a DM - we'll handle this in processMessage
         processMessage(event, config).catch((error) => {
           console.error("Error processing message:", error);
         });

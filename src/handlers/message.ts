@@ -9,7 +9,7 @@ export async function processMessage(
 ): Promise<void> {
   if (!event.event) return;
 
-  const { user, text, channel, thread_ts } = event.event;
+  const { user, text, channel, thread_ts, type } = event.event;
 
   // Skip bot messages
   if (event.event.bot_id) return;
@@ -18,7 +18,7 @@ export async function processMessage(
     const slackClient = new SlackClient(config);
 
     // Check if this message should trigger a response
-    const shouldRespond = await shouldBotRespond(slackClient, text, channel);
+    const shouldRespond = await shouldBotRespond(slackClient, text, channel, type);
     if (!shouldRespond) {
       console.log("Message doesn't require bot response, skipping");
       return;
@@ -59,25 +59,20 @@ export async function processMessage(
 async function shouldBotRespond(
   slackClient: SlackClient,
   text: string,
-  channel: string
+  channel: string,
+  eventType?: string
 ): Promise<boolean> {
   try {
-    // Get bot user ID
-    const botUserId = await slackClient.getBotUserId();
-    
-    // Check if message contains mention of the bot
-    const isMentioned = text.includes(`<@${botUserId}>`);
-    
-    if (isMentioned) {
+    // If it's an app_mention event, always respond
+    if (eventType === "app_mention") {
       return true;
     }
 
-    // Check if it's a DM (direct message)
-    const channelInfo = await slackClient.getChannelInfo(channel);
-    const isDM = channelInfo.is_im || channel.startsWith('D');
-    
-    if (isDM) {
-      return true;
+    // For regular message events, only respond to DMs
+    if (eventType === "message") {
+      const channelInfo = await slackClient.getChannelInfo(channel);
+      const isDM = channelInfo.is_im || channel.startsWith('D');
+      return isDM;
     }
 
     return false;
