@@ -27,23 +27,25 @@ export async function processMessage(
     // Generate response using LangChain
     const response = await langchainAgent.generateResponse(cleanedText, context);
 
-    // Send response to Slack
+    // Send response to Slack - always use threads for channel messages
+    const responseThreadTs = thread_ts || event.event.ts;
     await slackClient.sendMessage({
       channel,
       text: response,
-      thread_ts,
+      thread_ts: responseThreadTs,
     });
 
   } catch (error) {
     console.error("Error processing message:", error);
     
-    // Send error message to Slack
+    // Send error message to Slack - also use threads for error messages
     try {
       const slackClient = new SlackClient(config);
+      const errorThreadTs = thread_ts || event.event.ts;
       await slackClient.sendMessage({
         channel,
         text: "Sorry, I encountered an error processing your message.",
-        thread_ts,
+        thread_ts: errorThreadTs,
       });
     } catch (sendError) {
       console.error("Error sending error message:", sendError);
