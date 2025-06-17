@@ -16,14 +16,6 @@ export async function processMessage(
 
   try {
     const slackClient = new SlackClient(config);
-
-    // Check if this message should trigger a response
-    const shouldRespond = await shouldBotRespond(slackClient, text, channel, type);
-    if (!shouldRespond) {
-      console.log("Message doesn't require bot response, skipping");
-      return;
-    }
-
     const langchainAgent = new LangChainAgent(config);
 
     // Get conversation context from Slack history
@@ -56,32 +48,6 @@ export async function processMessage(
   }
 }
 
-async function shouldBotRespond(
-  slackClient: SlackClient,
-  text: string,
-  channel: string,
-  eventType?: string
-): Promise<boolean> {
-  try {
-    // If it's an app_mention event, always respond
-    if (eventType === "app_mention") {
-      return true;
-    }
-
-    // For regular message events, only respond to DMs
-    if (eventType === "message") {
-      const channelInfo = await slackClient.getChannelInfo(channel);
-      const isDM = channelInfo.is_im || channel.startsWith('D');
-      return isDM;
-    }
-
-    return false;
-  } catch (error) {
-    console.error("Error checking if bot should respond:", error);
-    // Default to not responding on error
-    return false;
-  }
-}
 
 async function buildConversationContext(
   slackClient: SlackClient, 

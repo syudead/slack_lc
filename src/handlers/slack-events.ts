@@ -2,6 +2,7 @@ import { verifySlackSignature } from "../utils/auth.ts";
 import { SlackEvent, SlackChallenge } from "../types/slack.ts";
 import { Config } from "../utils/config.ts";
 import { processMessage } from "./message.ts";
+import { SlackClient } from "../services/slack.ts";
 
 export async function handleSlackEvent(
   request: Request,
@@ -52,8 +53,8 @@ export async function handleSlackEvent(
       
       // Handle direct messages
       if (event.event?.type === "message" && !event.event.bot_id) {
-        // Check if it's a DM - we'll handle this in processMessage
-        processMessage(event, config).catch((error) => {
+        // Check if it's a DM using Slack API
+        checkAndProcessDM(event, config).catch((error) => {
           console.error("Error processing message:", error);
         });
       }
@@ -63,5 +64,21 @@ export async function handleSlackEvent(
   } catch (error) {
     console.error("Error handling Slack event:", error);
     return new Response("Internal Server Error", { status: 500 });
+  }
+}
+
+async function checkAndProcessDM(event: SlackEvent, config: Config): Promise<void> {
+  if (!event.event) return;
+  
+  try {
+    const slackClient = new SlackClient(config);
+    const channelInfo = await slackClient.getChannelInfo(event.event.channel);
+    
+    // Check if it's a DM using the official Slack API response
+    if (channelInfo.is_im) {
+      await processMessage(event, config);
+    }
+  } catch (error) {
+    console.error("Error checking DM status:", error);
   }
 }
